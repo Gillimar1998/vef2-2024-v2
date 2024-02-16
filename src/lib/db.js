@@ -10,7 +10,10 @@ if (!env?.connectionString) {
 
 const { connectionString } = env;
 
-const pool = new pg.Pool({ connectionString });
+const pool = new pg.Pool({ 
+  connectionString,
+  client_encoding: 'UTF8'
+ });
 
 pool.on('error', (err) => {
   console.error('Villa í tengingu við gagnagrunn, forrit hættir', err);
@@ -36,6 +39,31 @@ export async function query(q, values = []) {
   } finally {
     client.release();
   }
+}
+export async function getTeams() {
+  const q = `
+    SELECT
+      *
+    FROM
+      teams
+  `;
+
+  const result = await query(q);
+
+  const teams = [];
+
+  if (result && (result.rows?.length ?? 0) > 0) {
+    for (const row of result.rows) {
+      const team = {
+        id: row.id,
+        name: row.name,
+      };
+      teams.push(team);
+    }
+
+    return teams;
+  }
+
 }
 
 export async function getGames() {
