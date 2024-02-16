@@ -1,0 +1,22 @@
+<% if (!locals.games) {%>
+    <p> Engir leikir skráðir.</p>
+<% }else { %>
+<table>
+    <tr>
+      <th>Dagsetning</th>
+      <th>Heima lið</th>
+      <th>Heima lið skor</th>
+      <th>Útilið</th>
+      <th>Útilið skor</th>
+    </tr>
+  <% for (const game of locals.games) { %>
+    <tr>
+      <td><%= game.date %></td>
+      <td><%= game.home.name %></td>
+      <td><%= game.home.score %></td>
+      <td><%= game.away.name %></td>
+      <td><%= game.away.score %></td>
+    </tr>
+  <% } %>
+  </table>
+  <% } %>

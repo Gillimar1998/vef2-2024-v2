@@ -65,10 +65,16 @@ export async function getTeams() {
   }
 
 }
-
-export async function getGames() {
+const MAX_GAMES = 100;
+/**
+ * get games from the database
+ * @param {number} [limit=MAX_GAMES] Number of games to get
+ * @returns {Promise<Import('../types.js').game[] | null>}
+ */
+export async function getGames(limit = MAX_GAMES) {
   const q = `
     SELECT
+      games.id as id,
       date,
       home_team.name AS home_name,
       home_score,
@@ -80,14 +86,21 @@ export async function getGames() {
       teams AS home_team ON home_team.id = games.home
     LEFT JOIN
       teams AS away_team ON away_team.id = games.away
+    ORDER BY
+      date DESC
+    LIMIT $1
   `;
 
-  const result = await query(q);
+  const usedLimit = Math.min(limit > 0 ? limit : MAX_GAMES, MAX_GAMES)
+
+  const result = await query(q, [usedLimit.toString()]);
 
   const games = [];
+  /**@type Array<import('../types.js').game> */
   if (result && (result.rows?.length ?? 0) > 0) {
     for (const row of result.rows) {
       const game = {
+        id: row.id,
         date: row.date,
         home: {
           name: row.home_name,
@@ -105,11 +118,11 @@ export async function getGames() {
   }
 }
 
-export function insertGame(home_name, home_score, away_name, away_score) {
+export function insertGame(home_name, home_score, away_score, away_name) {
   const q =
-    'insert into games (home, away, home_score, away_score) values ($1, $2, $3, $4);';
+    'insert into games (home,  home_score, away_score, away) values ($1, $2, $3, $4);';
 
-  const result = query(q, [home_name, home_score, away_name, away_score]);
+  const result = query(q, [home_name, home_score, away_score, away_name]);
 }
 
 export async function end() {

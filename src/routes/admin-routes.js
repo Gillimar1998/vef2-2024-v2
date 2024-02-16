@@ -46,9 +46,9 @@ async function skraRoute(req, res, next) {
 
 function skraRouteInsert(req, res, next) {
   // TODO mjög hrátt allt saman, vantar validation!
-  const { home_name, home_score, away_name, away_score } = req.body;
+  const { home_name, home_score, away_score, away_name } = req.body;
 
-  const result = insertGame(home_name, home_score, away_name, away_score);
+  const result = insertGame(home_name, home_score, away_score, away_name);
 
   
 

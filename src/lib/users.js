@@ -6,6 +6,7 @@
  */
 
 import bcrypt from 'bcrypt';
+import { query } from './db.js';
 
 const records = [
   {
@@ -41,10 +42,13 @@ export async function comparePasswords(password, user) {
 // Merkjum sem async þó ekki verið að nota await, þar sem þetta er notað í
 // app.js gerir ráð fyrir async falli
 export async function findByUsername(username) {
-  const found = records.find((u) => u.username === username);
+  const q = 'SELECT * FROM users WHERE username = $1';
+  const result = await query(q, [username]);
 
-  if (found) {
-    return found;
+  console.log("findByUsername result:", result.rows[0]);
+
+  if (result && result.rows.length > 0) {
+    return result.rows[0];
   }
 
   return null;
@@ -53,10 +57,12 @@ export async function findByUsername(username) {
 // Merkjum sem async þó ekki verið að nota await, þar sem þetta er notað í
 // app.js gerir ráð fyrir async falli
 export async function findById(id) {
-  const found = records.find((u) => u.id === id);
+  const q = 'SELECT * FROM users WHERE id = $1';
+  const result = await query(q, [id]);
 
-  if (found) {
-    return found;
+  if (result && result.rows.length > 0) {
+    return result.rows[0];
+    console.log(result.rows[0]);
   }
 
   return null;

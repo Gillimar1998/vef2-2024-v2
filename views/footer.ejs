@@ -1,6 +1,10 @@
   </main>
   <footer>
-    <p>Þessi síða var búin til: <%= locals.time %></p>
+    <% if (locals.loggedIn) { %>
+      <p>Innsrkáður notandi: <%= locals.user.name %> (<%= locals.user.username %>)
+    <% } else { %>
+      <p>Þú ert ekki innskráður notandi, <a href="/admin">Skráðu þig inn</a></p>
+    <% } %>
   </footer>
 </body>
 
