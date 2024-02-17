@@ -5,7 +5,11 @@
  */
 export function handler404(req, res) {
   const title = 'Síða fannst ekki';
-  return res.status(404).render('error', { title });
+  const user = req.user ?? null;
+  const loggedIn = req.isAuthenticated();
+  return res.status(404).render('error', { title,
+  user,
+loggedIn });
 }
 
 /**

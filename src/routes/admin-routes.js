@@ -1,6 +1,6 @@
 import express from 'express';
 import passport from 'passport';
-import { insertGame } from '../lib/db.js';
+import { getGames, insertGame } from '../lib/db.js';
 import { getTeams } from '../lib/db.js';
 
 export const adminRouter = express.Router();
@@ -15,12 +15,14 @@ async function adminRoute(req, res) {
   const user = req.user ?? null;
   const loggedIn = req.isAuthenticated();
   const teams = await getTeams();
+  const games = await getGames();
 
   return res.render('admin', {
     title: 'Umsjónarsíða',
     user,
     loggedIn,
     teams,
+    games,
   });
 }
 
@@ -33,17 +35,6 @@ function ensureLoggedIn(req, res, next) {
   }
 
   return res.redirect('/login');
-}
-
-async function skraRoute(req, res, next) {
-  const teams = await getTeams();
-
-  console.log(teams);
-
-  return res.render('skra', {
-    title: 'Skrá leik',
-    teams,
-  });
 }
 
 function skraRouteInsert(req, res, next) {
@@ -68,8 +59,7 @@ function utskraRoute(req, res){
 adminRouter.get('/logout', utskraRoute);
 adminRouter.get('/login', indexRoute);
 adminRouter.get('/admin', ensureLoggedIn, adminRoute);
-adminRouter.get('/skra', skraRoute);
-adminRouter.post('/skra', skraRouteInsert);
+adminRouter.post('/admin', ensureLoggedIn,skraRouteInsert);
 
 adminRouter.post(
   '/login',

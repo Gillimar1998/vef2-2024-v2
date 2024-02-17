@@ -8,6 +8,7 @@
       <th>Heima lið skor</th>
       <th>Útilið skor</th>
       <th>Útilið</th>
+      <th>Eyða</th>
     </tr>
   <% for (const game of locals.games) { %>
     <tr>
@@ -16,6 +17,7 @@
       <td><%= game.home.score %></td>
       <td><%= game.away.score %></td>
       <td><%= game.away.name %></td>
+      <td><button>Eyða</button></td>
     </tr>
   <% } %>
   </table>

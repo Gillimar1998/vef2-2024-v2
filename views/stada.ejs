@@ -1,7 +1,27 @@
 <%- include('header') -%>
 
-<h1>Staðan í deildinni</h1>
-<p>TODO</p>
+<h2>Staðan í deildinni</h2>
+
+<table>
+  <tr>
+    <th>Sæti</th>
+    <th>Lið</th>
+    <th>Skoruð mörk</th>
+    <th>mörk á sig</th>
+    <th>+/-</th>
+    <th>stig</th>
+  </tr>
+<% locals.stada.forEach((lid, sæti) => { %>
+  <tr>
+    <td><%= sæti + 1 %></td>
+    <td><%= lid.name %></td>
+    <td><%= lid.skorad %></td>
+    <td><%= lid.morkASig %></td>
+    <td><%= lid.total %></td>
+    <td><%= lid.stig %></td>
+  </tr>
+<% }) %>
+</table>
 
 <% if (locals.loggedIn) { %>
     <p>ýttu á <a href="/admin">Umsjónarsíða</a> til að eiga við gögn</p>
