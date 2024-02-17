@@ -2,4 +2,9 @@
 
 <h1>Staðan í deildinni</h1>
 <p>TODO</p>
+
+<% if (locals.loggedIn) { %>
+    <p>ýttu á <a href="/admin">Umsjónarsíða</a> til að eiga við gögn</p>
+  <% }  %>
+
 <%- include('footer') -%>

@@ -14,11 +14,13 @@ async function indexRoute(req, res) {
 async function adminRoute(req, res) {
   const user = req.user ?? null;
   const loggedIn = req.isAuthenticated();
+  const teams = await getTeams();
 
   return res.render('admin', {
-    title: 'Admin upplýsingar, mjög leynilegt',
+    title: 'Umsjónarsíða',
     user,
     loggedIn,
+    teams,
   });
 }
 
@@ -55,6 +57,15 @@ function skraRouteInsert(req, res, next) {
  // res.redirect('/leikir');
 }
 
+
+function utskraRoute(req, res){
+  req.logout(function(err){
+    if(err){return next(err);}
+    res.redirect('/')
+  })
+}
+
+adminRouter.get('/logout', utskraRoute);
 adminRouter.get('/login', indexRoute);
 adminRouter.get('/admin', ensureLoggedIn, adminRoute);
 adminRouter.get('/skra', skraRoute);
@@ -70,6 +81,7 @@ adminRouter.post(
   }),
 
   // Ef við komumst hingað var notandi skráður inn, senda á /admin
+
   (req, res) => {
     res.redirect('/admin');
   },
