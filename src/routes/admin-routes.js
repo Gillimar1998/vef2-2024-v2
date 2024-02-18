@@ -2,10 +2,13 @@ import express from 'express';
 import passport from 'passport';
 import { getGames, insertGame } from '../lib/db.js';
 import { getTeams } from '../lib/db.js';
+import { ensureLoggedIn, skraValidation } from '../lib/validation.js';
+import { validationResult } from 'express-validator';
+
 
 export const adminRouter = express.Router();
 
-async function indexRoute(req, res) {
+async function loginRoute(req, res) {
   return res.render('login', {
     title: 'Innskráning',
   });
@@ -16,6 +19,7 @@ async function adminRoute(req, res) {
   const loggedIn = req.isAuthenticated();
   const teams = await getTeams();
   const games = await getGames();
+  
 
   return res.render('admin', {
     title: 'Umsjónarsíða',
@@ -23,29 +27,22 @@ async function adminRoute(req, res) {
     loggedIn,
     teams,
     games,
+    errors: [],
+    formData: req.body,
   });
 }
 
-// TODO færa á betri stað
-// Hjálpar middleware sem athugar hvort notandi sé innskráður og hleypir okkur
-// þá áfram, annars sendir á /login
-function ensureLoggedIn(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next();
-  }
 
-  return res.redirect('/login');
-}
 
 function skraRouteInsert(req, res, next) {
   // TODO mjög hrátt allt saman, vantar validation!
-  const { home_name, home_score, away_score, away_name } = req.body;
+  const { Dagsetning, home_name, home_score, away_score, away_name } = req.body;
 
-  const result = insertGame(home_name, home_score, away_score, away_name);
+  const result = insertGame(Dagsetning, home_name, home_score, away_score, away_name);
 
   
 
- // res.redirect('/leikir');
+ res.redirect('/admin');
 }
 
 
@@ -57,9 +54,26 @@ function utskraRoute(req, res){
 }
 
 adminRouter.get('/logout', utskraRoute);
-adminRouter.get('/login', indexRoute);
+adminRouter.get('/login', loginRoute);
 adminRouter.get('/admin', ensureLoggedIn, adminRoute);
-adminRouter.post('/admin', ensureLoggedIn,skraRouteInsert);
+adminRouter.post('/admin', ensureLoggedIn, skraValidation(), async (req, res, next) => {
+
+  const errors = validationResult(req);
+  const teams = await getTeams();
+  const games = await getGames();
+
+  if (!errors.isEmpty()) {
+    return res.render('admin', {
+      errors: errors.array(),
+      user: req.user ?? null,
+      loggedIn: req.isAuthenticated(),
+      teams: teams,
+      games: games,
+      formData: req.body,
+    })
+  }
+  next();
+} ,skraRouteInsert);
 
 adminRouter.post(
   '/login',

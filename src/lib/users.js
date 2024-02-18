@@ -45,8 +45,6 @@ export async function findByUsername(username) {
   const q = 'SELECT * FROM users WHERE username = $1';
   const result = await query(q, [username]);
 
-  console.log("findByUsername result:", result.rows[0]);
-
   if (result && result.rows.length > 0) {
     return result.rows[0];
   }
@@ -62,7 +60,6 @@ export async function findById(id) {
 
   if (result && result.rows.length > 0) {
     return result.rows[0];
-    console.log(result.rows[0]);
   }
 
   return null;

@@ -113,16 +113,28 @@ export async function getGames(limit = MAX_GAMES) {
       };
       games.push(game);
     }
+    games.forEach(game => {
+      game.date = new Intl.DateTimeFormat('is-IS', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      }).format(new Date(game.date));
+    });
 
     return games;
   }
 }
 
-export function insertGame(home_name, home_score, away_score, away_name) {
-  const q =
-    'insert into games (home,  home_score, away_score, away) values ($1, $2, $3, $4);';
 
-  const result = query(q, [home_name, home_score, away_score, away_name]);
+export function insertGame(dagsetning, home_name, home_score, away_score, away_name) {
+  const q =
+    'insert into games (date, home,  home_score, away_score, away) values ($1, $2, $3, $4, $5);';
+
+  const result = query(q, [dagsetning, home_name, home_score, away_score, away_name]);
 }
 
 export async function end() {

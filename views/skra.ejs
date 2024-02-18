@@ -1,32 +1,67 @@
-<form method="post" action="/skra">
+<form method="post" action="/admin">
   <div>
     <label for="home_name">Heima lið</label>
-    <select id="home_name" name="home_name">
+    <select id="home_name" name="home_name" value="<%= formData.home_name %>">
       <% teams.forEach(function(team) { %>
-        <option value="<%= team.id %>"><%= team.name %></option>
+        <option value="<%= team.id %>"<%= formData.home_name == team.id ? 'selected' : '' %>><%= team.name %></option>
       <% }); %>
     </select>
+    <%  if (errors) { %>
+      <% errors.forEach(function(error){ %>
+        <% if (error.path === 'home_name'){ %>
+          <div class="error"><%= error.msg %></div>
+          <%  } %>
+        <%  }) %>
+   <%  } %>
   </div>
   <div>
     <label for="home_score">Heima skor</label>
-    <input type="text" id="home_score" name="home_score">
+    <input type="text" id="home_score" name="home_score" value="<%= formData.home_score %>">
+    <%  if (errors) { %>
+      <% errors.forEach(function(error){ %>
+        <% if (error.path === 'home_score'){ %>
+          <div class="error"><%= error.msg %></div>
+          <%  } %>
+        <%  }) %>
+   <%  } %>
   </div>
   
   <div>
     <label for="away_score">Úti lið skor</label>
-    <input type="text" id="away_score" name="away_score">
+    <input type="text" id="away_score" name="away_score" value="<%= formData.away_score %>">
+    <%  if (errors) { %>
+      <% errors.forEach(function(error){ %>
+        <% if (error.path === 'away_score'){ %>
+          <div class="error"><%= error.msg %></div>
+          <%  } %>
+        <%  }) %>
+   <%  } %>
   </div>
   <div>
     <label for="away_name">Úti lið</label>
-    <select id="away_name" name="away_name">
+    <select id="away_name" name="away_name" value="<%= formData.away_name %>">
       <% teams.forEach(function(team) { %>
-        <option value="<%= team.id %>"><%= team.name %></option>
+        <option value="<%= team.id %>"<%= formData.away_name == team.id ? 'selected' : '' %>><%= team.name %></option>
       <% }); %>
     </select>
+    <%  if (errors) { %>
+      <% errors.forEach(function(error){ %>
+        <% if (error.path === 'away_name'){ %>
+          <div class="error"><%= error.msg %></div>
+          <%  } %>
+        <%  }) %>
+   <%  } %>
   </div>
   <div>
     <label for="Dagsetning">Dagsetning</label>
-    <input type="date" id="Dagsetning" name="Dagsetning">
+    <input type="datetime-local" id="Dagsetning" name="Dagsetning" value="<%= formData.Dagsetning %>">
+    <%  if (errors) { %>
+      <% errors.forEach(function(error){ %>
+        <% if (error.path === 'Dagsetning'){ %>
+          <div class="error"><%= error.msg %></div>
+          <%  } %>
+        <%  }) %>
+   <%  } %>
   </div>
   <button>Skrá</button>
 </form>

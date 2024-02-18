@@ -1,5 +1,5 @@
 import express from 'express';
-import { getGames } from '../lib/db.js';
+import { getGames} from '../lib/db.js';
 import { calcstada } from '../lib/stada.js';
 
 export const indexRouter = express.Router();
@@ -13,17 +13,6 @@ async function indexRoute(req, res) {
 
   const stada = await calcstada(gamesall, 3);
 
-  games.forEach(game => {
-    game.date = new Intl.DateTimeFormat('is-IS', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
-    }).format(new Date(game.date));
-  });
   return res.render('index', {
     title: 'Forsíða',
     games,
@@ -39,17 +28,6 @@ async function leikirRoute(req, res) {
   const user = req.user ?? null;
   const loggedIn = req.isAuthenticated();
 
-  games.forEach(game => {
-    game.date = new Intl.DateTimeFormat('is-IS', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
-    }).format(new Date(game.date));
-  });
 
   return res.render('leikir', {
     title: 'Leikir',
