@@ -9,8 +9,12 @@ import { validationResult } from 'express-validator';
 export const adminRouter = express.Router();
 
 async function loginRoute(req, res) {
+  const failureMessage = req.session.failureMessage;
+  delete req.session.failureMessage;
   return res.render('login', {
     title: 'Innskráning',
+    failureMessage: failureMessage,
+
   });
 }
 
@@ -57,7 +61,7 @@ function utskraRoute(req, res){
 adminRouter.get('/logout', utskraRoute);
 adminRouter.get('/login', loginRoute);
 adminRouter.get('/admin', ensureLoggedIn, adminRoute);
-adminRouter.post('/admin', ensureLoggedIn, skraValidation(), async (req, res, next) => {
+adminRouter.post('/insert-game', ensureLoggedIn, skraValidation(), async (req, res, next) => {
 
   const errors = validationResult(req);
   const teams = await getTeams();
@@ -78,13 +82,15 @@ adminRouter.post('/admin', ensureLoggedIn, skraValidation(), async (req, res, ne
   next();
 } ,skraRouteInsert);
 
-adminRouter.post('/delete-game', async (req, res) => {
+adminRouter.post('/delete-game',ensureLoggedIn, async (req, res) => {
   const {gameId} = req.body;
 
+  const teams = await getTeams();
+  const games = await getGames();
 
   try{
     await deleteGame(gameId);
-    res.redirect('/admin')
+    res.redirect('/admin',)
   }catch(error){
     console.error('Villa við að eyða leik', error);
     res.render('/admin',{
@@ -101,18 +107,20 @@ adminRouter.post('/delete-game', async (req, res) => {
   
 })
 
-adminRouter.post(
-  '/login',
-
-  // Þetta notar strat að ofan til að skrá notanda inn
-  passport.authenticate('local', {
-    failureMessage: 'Notandanafn eða lykilorð vitlaust.',
-    failureRedirect: '/login',
-  }),
-
-  // Ef við komumst hingað var notandi skráður inn, senda á /admin
-
-  (req, res) => {
-    res.redirect('/admin');
-  },
-);
+adminRouter.post('/login', (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      req.session.failureMessage = 'Notandanafn eða lykilorð vitlaust.';
+      return res.redirect('/login');
+    }
+    req.logIn(user, function(err) {
+      if (err) {
+        return next(err);
+      }
+      return res.redirect('/admin');
+    });
+  })(req, res, next);
+});

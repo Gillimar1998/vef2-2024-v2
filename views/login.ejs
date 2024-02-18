@@ -6,4 +6,8 @@
   <button>Innskrá</button>
 </form>
 
+<% if (failureMessage) { %>
+  <div class="error"><%= failureMessage %></div>
+<% } %>
+
 <%- include('footer') -%>

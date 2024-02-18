@@ -13,6 +13,18 @@ export function skraValidation() {
         }else{
             return true;
         }
+    })
+    .custom((value) =>{
+      const input = new Date(value);
+        const now = new Date;
+        const twoMonths = new Date(now);
+        twoMonths.setMonth(now.getMonth()-2);
+        
+        if(input< twoMonths){
+          throw new Error('Ekki hægt að skrá leiki eldri en tveggja mánaða')
+        }else{
+          return true;
+        }
     }),
     body('home_name')
       .trim()
