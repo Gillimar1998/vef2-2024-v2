@@ -54,7 +54,7 @@ function skraRouteInsert(req, res, next) {
 function utskraRoute(req, res){
   req.logout(function(err){
     if(err){return next(err);}
-    res.redirect('/')
+    res.redirect('/login')
   })
 }
 

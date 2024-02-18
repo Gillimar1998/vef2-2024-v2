@@ -1,4 +1,5 @@
 import { body } from 'express-validator';
+import { getTeams } from './db.js';
 
 export function skraValidation() {
   return [
@@ -28,13 +29,30 @@ export function skraValidation() {
     }),
     body('home_name')
       .trim()
-      .isLength({ min: 1 })
-      .withMessage('Heima lið má ekki vanta'),
+      .custom(async (value) => {
+        value = parseInt(value, 10);
+        const teams = await getTeams();
+        const teamids = teams.map(team => team.id);
+        if(!teamids.includes(value)){
+          throw new Error('Heimalið má ekki vanta');
+        }else{
+          return true;
+        }
+      }),
     body('away_name')
-      .trim()
-      .isLength({ min: 1 })
-      .withMessage('úti lið má ekki vanta')
-      .custom((value,{req}) =>{
+    .trim()
+    .custom(async (value) => {
+      value = parseInt(value, 10);
+      const teams = await getTeams();
+      const teamids = teams.map(team => team.id);
+      if(!teamids.includes(value)){
+        throw new Error('Útilið má ekki vanta');
+      }else{
+        return true;
+      }
+    })
+    .bail()
+    .custom((value,{req}) =>{
         if (value === req.body.home_name){
             throw new Error('Heima og úti lið mega ekki vera það sama');
         }else{
@@ -43,17 +61,17 @@ export function skraValidation() {
       }),
     body('home_score')
       .notEmpty()
-      .withMessage('Vantar Mörk')
+      .withMessage('Heimalið vantar stig')
       .bail()
-      .isInt({ min: 0 })
-      .withMessage('Mörk geta ekki verið neikvæð'),
+      .isInt({ min: 0, max: 99 })
+      .withMessage('Stig heimaliðs verða að vera heiltala frá 0 til 99'),
       
     body('away_score')
     .notEmpty()
-      .withMessage('Vantar Mörk')
+      .withMessage('Útilið vantar stig')
       .bail()
-      .isInt({ min: 0 })
-      .withMessage('Mörk geta ekki verið neikvæð'),
+      .isInt({min: 0, max: 99})
+      .withMessage('Stig útiliðs verða að vera heiltala frá 0 til 99'),
   ];
 }
 
