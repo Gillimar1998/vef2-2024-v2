@@ -137,6 +137,18 @@ export function insertGame(dagsetning, home_name, home_score, away_score, away_n
   const result = query(q, [dagsetning, home_name, home_score, away_score, away_name]);
 }
 
+export function deleteGame(gameId){
+  const q = 'DELETE FROM games WHERE id = $1';
+  try{
+    const result = query(q, [gameId]);
+    return result;
+  } catch(error){
+    console.error('Villa við að eyða leik', error);
+    throw error;
+  }
+  
+}
+
 export async function end() {
   await pool.end();
 }

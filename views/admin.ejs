@@ -6,6 +6,10 @@
 
 <h2>Seinustu leikir</h2>
 
-<%- include('gamesAdmin') -%>
+<% if (errorMessage) { %>
+    <div class="error"><%= errorMessage %></div>
+<% } %>
+
+    <%- include('gamesAdmin') -%>
 
 <%- include('footer') -%>

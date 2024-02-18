@@ -1,6 +1,6 @@
 import express from 'express';
 import passport from 'passport';
-import { getGames, insertGame } from '../lib/db.js';
+import { getGames, insertGame, deleteGame } from '../lib/db.js';
 import { getTeams } from '../lib/db.js';
 import { ensureLoggedIn, skraValidation } from '../lib/validation.js';
 import { validationResult } from 'express-validator';
@@ -23,6 +23,7 @@ async function adminRoute(req, res) {
 
   return res.render('admin', {
     title: 'Umsjónarsíða',
+    errorMessage: null,
     user,
     loggedIn,
     teams,
@@ -64,7 +65,9 @@ adminRouter.post('/admin', ensureLoggedIn, skraValidation(), async (req, res, ne
 
   if (!errors.isEmpty()) {
     return res.render('admin', {
+      title: 'Umsjónarsíða',
       errors: errors.array(),
+      errorMessage: null,
       user: req.user ?? null,
       loggedIn: req.isAuthenticated(),
       teams: teams,
@@ -74,6 +77,29 @@ adminRouter.post('/admin', ensureLoggedIn, skraValidation(), async (req, res, ne
   }
   next();
 } ,skraRouteInsert);
+
+adminRouter.post('/delete-game', async (req, res) => {
+  const {gameId} = req.body;
+
+
+  try{
+    await deleteGame(gameId);
+    res.redirect('/admin')
+  }catch(error){
+    console.error('Villa við að eyða leik', error);
+    res.render('/admin',{
+      title: 'Umsjónarsíða',
+      errors: [],
+      errorMessage: 'Ekki var hægt að eyða leik, reynið aftur síðar',
+      user: req.user ?? null,
+      loggedIn: req.isAuthenticated(),
+      teams: teams,
+      games: games,
+      formData: req.body,
+    })
+  }
+  
+})
 
 adminRouter.post(
   '/login',

@@ -17,7 +17,12 @@
       <td><%= game.home.score %></td>
       <td><%= game.away.score %></td>
       <td><%= game.away.name %></td>
-      <td><button>Eyða</button></td>
+      <td>
+        <form action="/delete-game" method="POST">
+          <input type="hidden" name="gameId" value="<%= game.id %>">
+          <button>Eyða</button>
+        </form>
+      </td>
     </tr>
   <% } %>
   </table>
