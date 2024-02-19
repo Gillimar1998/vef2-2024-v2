@@ -124,6 +124,6 @@ adminRouter.post('/login', (req, res, next) => {
       }
       return res.redirect('/admin');
     });
-    return null;
+    return null
   })(req, res, next);
 });

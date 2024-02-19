@@ -1,3 +1,18 @@
+## Login info
+
+- USERNAME: BOSS PASSWORD:123
+- USERNAME: boss PASSWORD:123
+
+## Notkun Chat GPT 4.0
+
+- skrifa kóða fyrir jsonIntoDB
+- Hjálp við 
+  -- validation og þá aðarlega að birta þá í html formi
+  -- fá upp error message við login
+  -- laga errors 
+- annars notað til útskýringar á hvernig hlutinir virka og hvað væri að gerast
+
+
 # Vefforritun 2, 2024, verkefni 2: Express, postgres og hýsing
 
 - [Kynning á verkefni](https://youtu.be/OlYfb4N-IZQ)
