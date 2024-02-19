@@ -75,25 +75,6 @@ export function skraValidation() {
   ];
 }
 
-// Viljum keyra sér og með validation, ver gegn „self XSS“
-export function xssSanitizationMiddleware(textField) {
-  return [
-    body('name').customSanitizer((v) => xss(v)),
-    body('location').customSanitizer((v) => xss(v)),
-    body('url').customSanitizer((v) => xss(v)),
-    body(textField).customSanitizer((v) => xss(v)),
-  ];
-}
-
-export function sanitizationMiddleware(textField) {
-  return [
-    body('name').trim().escape(),
-    body(textField).trim().escape(),
-    body('location').trim().escape(),
-    body('url').trim().escape(),
-  ];
-}
-
 // Hjálpar middleware sem athugar hvort notandi sé innskráður og hleypir okkur
 // þá áfram, annars sendir á /login
 export function ensureLoggedIn(req, res, next) {

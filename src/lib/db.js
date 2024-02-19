@@ -60,10 +60,8 @@ export async function getTeams() {
       };
       teams.push(team);
     }
-
-    return teams;
   }
-
+  return teams;
 }
 const MAX_GAMES = 100;
 /**
@@ -96,7 +94,7 @@ export async function getGames(limit = MAX_GAMES) {
   const result = await query(q, [usedLimit.toString()]);
 
   const games = [];
-  /**@type Array<import('../types.js').game> */
+  /** @type Array<import('../types.js').game> */
   if (result && (result.rows?.length ?? 0) > 0) {
     for (const row of result.rows) {
       const game = {
@@ -124,17 +122,22 @@ export async function getGames(limit = MAX_GAMES) {
         second: '2-digit'
       }).format(new Date(game.date));
     });
-
-    return games;
   }
+  return games;
 }
 
 
-export function insertGame(dagsetning, home_name, home_score, away_score, away_name) {
+export function insertGame(dagsetning, homeName, homeScore, awayScore, awayName) {
   const q =
     'insert into games (date, home,  home_score, away_score, away) values ($1, $2, $3, $4, $5);';
 
-  const result = query(q, [dagsetning, home_name, home_score, away_score, away_name]);
+    query(q, [dagsetning, homeName, homeScore, awayScore, awayName])
+    .then(result => {
+      logger.info('Query successful', { result });
+    })
+    .catch(error => {
+      logger.error('Query failed', { error });
+    });
 }
 
 export function deleteGame(gameId){

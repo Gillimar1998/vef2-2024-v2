@@ -10,29 +10,29 @@
 </div>
 <form method="post" action="/insert-game">
   <div class = field>
-    <label for="home_name">Heimalið:</label>
-    <select id="home_name" name="home_name" value="<%= formData.home_name %>">
+    <label for="homeName">Heimalið:</label>
+    <select id="homeName" name="homeName" value="<%= formData.homeName %>">
       <option value="">--Veldu heimalið--</option>
       <% teams.forEach(function(team) { %>
-        <option value="<%= team.id %>"<%= formData.home_name == team.id ? 'selected' : '' %>><%= team.name %></option>
+        <option value="<%= team.id %>"<%= formData.homeName == team.id ? 'selected' : '' %>><%= team.name %></option>
       <% }); %>
     </select>
   </div>
   <div class = field>
-    <label for="home_score">Heimaliðs stig:</label>
-    <input type="text" id="home_score" name="home_score" value="<%= formData.home_score %>">
+    <label for="homeScore">Heimaliðs stig:</label>
+    <input type="text" id="homeScore" name="homeScore" value="<%= formData.homeScore %>">
   </div>
   
   <div class = field>
-    <label for="away_score">Útiliðs stig:</label>
-    <input type="text" id="away_score" name="away_score" value="<%= formData.away_score %>">
+    <label for="awayScore">Útiliðs stig:</label>
+    <input type="text" id="awayScore" name="awayScore" value="<%= formData.awayScore %>">
   </div>
   <div class = field>
-    <label for="away_name">Útilið:</label>
-    <select id="away_name" name="away_name" value="<%= formData.home_name %>">
+    <label for="awayName">Útilið:</label>
+    <select id="awayName" name="awayName" value="<%= formData.homeName %>">
       <option value="">--Veldu útilið--</option>
       <% teams.forEach(function(team) { %>
-        <option value="<%= team.id %>"<%= formData.away_name == team.id ? 'selected' : '' %>><%= team.name %></option>
+        <option value="<%= team.id %>"<%= formData.awayName == team.id ? 'selected' : '' %>><%= team.name %></option>
       <% }); %>
     </select>
   </div>

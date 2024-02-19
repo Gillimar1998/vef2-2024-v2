@@ -1,11 +1,11 @@
 <%- include('header') -%>
 
-<form method="post" action="/login" autocomplete="off">
-  <div class = field>
+<form class = "login-form"method="post" action="/login" autocomplete="off">
+  <div class = login-field>
     <label>Notendanafn:</label> 
     <input type="text" name="username">
   </div>
-  <div class = field>
+  <div class = login-field>
     <label>Lykilorð:</label>
     <input type="password" name="password">
   </div>
@@ -13,7 +13,7 @@
 </form>
 
 <% if (failureMessage) { %>
-  <div class="loginError"><%= failureMessage %></div>
+  <div class="login-error"><%= failureMessage %></div>
 <% } %>
 
 <%- include('footer') -%>

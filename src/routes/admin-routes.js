@@ -1,19 +1,19 @@
 import express from 'express';
 import passport from 'passport';
-import { getGames, insertGame, deleteGame } from '../lib/db.js';
-import { getTeams } from '../lib/db.js';
-import { ensureLoggedIn, skraValidation } from '../lib/validation.js';
 import { validationResult } from 'express-validator';
+import { getGames, getTeams, insertGame, deleteGame } from '../lib/db.js';
+import { ensureLoggedIn, skraValidation } from '../lib/validation.js';
+
 
 
 export const adminRouter = express.Router();
 
 async function loginRoute(req, res) {
-  const failureMessage = req.session.failureMessage;
+  const {failureMessage} = req.session;
   delete req.session.failureMessage;
   return res.render('login', {
     title: 'Innskráning',
-    failureMessage: failureMessage,
+    failureMessage,
 
   });
 }
@@ -41,21 +41,22 @@ async function adminRoute(req, res) {
 
 function skraRouteInsert(req, res, next) {
   // TODO mjög hrátt allt saman, vantar validation!
-  const { Dagsetning, home_name, home_score, away_score, away_name } = req.body;
+  const { Dagsetning, homeName, homeScore, awayScore, awayName } = req.body;
 
-  const result = insertGame(Dagsetning, home_name, home_score, away_score, away_name);
-
-  
-
- res.redirect('/admin');
+  insertGame(Dagsetning, homeName, homeScore, awayScore, awayName)
+    .then(() => res.redirect('/admin'))
+    .catch(next);
 }
 
 
-function utskraRoute(req, res){
-  req.logout(function(err){
-    if(err){return next(err);}
-    res.redirect('/login')
-  })
+function utskraRoute(req, res, next) {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect('/login');
+    return null;
+  });
 }
 
 adminRouter.get('/logout', utskraRoute);
@@ -74,12 +75,13 @@ adminRouter.post('/insert-game', ensureLoggedIn, skraValidation(), async (req, r
       errorMessage: null,
       user: req.user ?? null,
       loggedIn: req.isAuthenticated(),
-      teams: teams,
-      games: games,
+      teams,
+      games,
       formData: req.body,
     })
   }
   next();
+  return null;
 } ,skraRouteInsert);
 
 adminRouter.post('/delete-game',ensureLoggedIn, async (req, res) => {
@@ -99,16 +101,16 @@ adminRouter.post('/delete-game',ensureLoggedIn, async (req, res) => {
       errorMessage: 'Ekki var hægt að eyða leik, reynið aftur síðar',
       user: req.user ?? null,
       loggedIn: req.isAuthenticated(),
-      teams: teams,
-      games: games,
+      teams,
+      games,
       formData: req.body,
     })
   }
-  
+  return null;
 })
 
 adminRouter.post('/login', (req, res, next) => {
-  passport.authenticate('local', (err, user, info) => {
+  passport.authenticate('local', (err, user) => {
     if (err) {
       return next(err);
     }
@@ -116,11 +118,12 @@ adminRouter.post('/login', (req, res, next) => {
       req.session.failureMessage = 'Notandanafn eða lykilorð vitlaust.';
       return res.redirect('/login');
     }
-    req.logIn(user, function(err) {
-      if (err) {
-        return next(err);
+    req.logIn(user, (loginErr) => {
+      if (loginErr) {
+        return next(loginErr);
       }
       return res.redirect('/admin');
     });
+    return null;
   })(req, res, next);
 });

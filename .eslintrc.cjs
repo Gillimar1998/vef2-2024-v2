@@ -14,12 +14,11 @@ module.exports = {
     'import/no-extraneous-dependencies': 0,
     'no-param-reassign': 0,
     quotes: ['error', 'single'],
-    'no-console': [
-      'warn',
-      {
-        allow: ['warn', 'error', 'info', 'group', 'groupCollapsed', 'groupEnd'],
-      },
-    ],
+    'no-console': process.env.NODE_ENV === 'production'
+      ? ['warn', {
+          allow: ['warn', 'error', 'info', 'group', 'groupCollapsed', 'groupEnd'],
+        }]
+      : 'off',
     'import/extensions': 0,
     'max-len': [
       'warn',

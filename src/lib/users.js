@@ -7,28 +7,28 @@
 
 import bcrypt from 'bcrypt';
 import { query } from './db.js';
-
-const records = [
-  {
-    id: 1,
-    username: 'admin',
-    name: 'Hr. admin',
-
-    // 123
-    password: '$2a$11$pgj3.zySyFOvIQEpD7W6Aund1Tw.BFarXxgLJxLbrzIv/4Nteisii',
-    admin: true,
-  },
-  {
-    id: 2,
-    username: 'oli',
-    name: 'Óli',
-
-    // 123
-    password: '$2a$11$pgj3.zySyFOvIQEpD7W6Aund1Tw.BFarXxgLJxLbrzIv/4Nteisii',
-    admin: false,
-  },
-];
-
+/** 
+* const records = [
+*  {
+*    id: 1,
+*    username: 'admin',
+*    name: 'Hr. admin',
+*
+*    // 123
+*    password: '$2a$11$pgj3.zySyFOvIQEpD7W6Aund1Tw.BFarXxgLJxLbrzIv/4Nteisii',
+*    admin: true,
+*  },
+*  {
+*    id: 2,
+*    username: 'oli',
+*    name: 'Óli',
+*
+*    // 123
+*    password: '$2a$11$pgj3.zySyFOvIQEpD7W6Aund1Tw.BFarXxgLJxLbrzIv/4Nteisii',
+*    admin: false,
+*  },
+* ];
+*/
 export async function comparePasswords(password, user) {
   const ok = await bcrypt.compare(password, user.password);
 
